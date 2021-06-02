@@ -1,6 +1,3 @@
-PImage title, gameover, gamewin, startNormal, startHovered, restartNormal, restartHovered;
-PImage groundhogIdle, groundhogLeft, groundhogRight, groundhogDown;
-PImage bg, life, cabbage, soilEmpty, clock, caution, sweethome;
 PImage soldier, robot, dinosaur;
 PImage[][] soilImages, stoneImages;
 PFont font;
@@ -23,6 +20,8 @@ final int START_BUTTON_Y = 360;
 Player player;
 Item[] items;
 Enemy[] enemies;
+Cabbage[]cabbages;
+Dinosaur [] dinosaurs;
 
 final int GAME_INIT_TIMER = 7200;
 int gameTimer = GAME_INIT_TIMER;
@@ -146,24 +145,44 @@ void initGame(){
 
 	for(int i = 0; i < enemies.length; i++){
 		float newX = random(0, width - SOIL_SIZE);
-		float newY = SOIL_SIZE * ( i * 4 + floor(random(4)));
-
+		float newY = SOIL_SIZE * ( i * 4 + floor(random(4)));   
 		switch(i){
-			case 0: case 1: enemies[i] = new Soldier(newX, newY);
-			case 2: case 3: // Requirement 4: Create new Dinosaur in row 9 - 16
-			case 4: case 5: // Requirement 5: Create new Robot in row 17 - 25
+			case 0: enemies[i] = new Soldier(newX, newY);
+        break;
+      case 1:enemies[i] = new Soldier(newX, newY);
+        break;
+      case 2:enemies[i]= new Dinosaur(newX, newY);
+        break;
+      case 3:enemies[i]= new Dinosaur(newX, newY);
+        break;
+      // Requirement 4: Create new Dinosaur in row 9 - 16
+      case 4:enemies[i]= new Robot(newX, newY);
+        break;
+      case 5:enemies[i]= new Robot(newX, newY);
+        break;
+      // Requirement 5: Create new Robot in row 17 - 25
 		}
 
 
 	}
 
 	// Initialize items and their position
-
+ 
 	items = new Item[6];
+
+
 
 	for(int i = 0; i < items.length; i++){
 		float newX = SOIL_SIZE * floor(random(SOIL_COL_COUNT));
 		float newY = SOIL_SIZE * ( i * 4 + floor(random(4)));
+    int randomnub=int(random(0,2));
+    if (randomnub==0){
+      items[i] = new Cabbage(newX, newY);
+    }else{
+      items[i] = new Clock(newX, newY);
+    }
+    
+
 
 		// Requirement #3:
 		// 	- Randomly decide if a cabbage or a clock should appear in a random soil every 4 rows (6 items in total)
@@ -236,6 +255,11 @@ void draw() {
 		image(sweethome, 0, SOIL_ROW_COUNT * SOIL_SIZE);
 
 		// Items
+    for(Item i: items){ //:what? (int e =0;e<.length;e++)
+      i.display();
+      i.checkCollision(player);
+    }
+
 		// Requirement #3: Display and check collision with player for each item in Item[] items
 
 		// Player
@@ -244,7 +268,7 @@ void draw() {
 
 		// Enemies
 
-		for(Enemy e : enemies){
+		for(Enemy e : enemies){ //:what? (int e =0;e<.length;e++)
 			if(e == null) continue;
 			e.update();
 			e.display();
@@ -411,3 +435,4 @@ void keyReleased(){
 		}
 	}
 }
+
